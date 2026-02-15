@@ -1,0 +1,69 @@
+
+================================================================
+         CNN-ViT HYBRID WEED DETECTOR ARCHITECTURE
+================================================================
+
+Problem: Automate weed detection in the field using 
+         computationally inexpensive CNNs to reduce 
+         herbicide usage and increase precision agriculture yield.
+
+Input: RGB Image (224 x 224 x 3)
+  |
+  v
+STAGE 1: CNN BACKBONE (MobileNetV3-Small)
+  - Pretrained on ImageNet
+  - Depthwise separable convolutions
+  - Squeeze-and-excitation blocks
+  - Output: 576 x 7 x 7 feature map
+  - Params: ~1.5M
+  - Purpose: Extract local features (leaf texture, color, edges)
+  |
+  v
+STAGE 2: PATCH EMBEDDING
+  - Conv2d(576 -> 256, 1x1) + BatchNorm + GELU
+  - Flatten: 7x7 = 49 spatial tokens
+  - Each token represents one region of the image
+  |
+  v
+STAGE 3: VISION TRANSFORMER
+  - Prepend learnable [CLS] token -> 50 tokens total
+  - Add learnable positional embeddings
+  - 4 Transformer Encoder layers
+    - 8 attention heads
+    - Embedding dim = 256
+    - MLP ratio = 2.0
+    - Pre-LayerNorm (stable training)
+    - GELU activation
+  - Params: ~2.3M
+  - Purpose: Capture global context, spatial relationships,
+    long-range dependencies between plant regions
+  |
+  v
+CLS Token Output (256-dim vector)
+  |
+  +-------+-------+
+  |               |
+  v               v
+MULTI-CLASS     BINARY
+HEAD            HEAD
+256->128->9     256->64->2
+(9 species)     (Weed vs Negative)
+                  |
+                  v
+              SPRAY DECISION
+              < 0.3  : NO_SPRAY
+              0.3-0.7: SPOT_SPRAY
+              > 0.7  : FULL_SPRAY
+
+================================================================
+SPECIFICATIONS
+================================================================
+Total Parameters:  ~3.8M
+Model Size (FP32): ~14.5 MB
+Model Size (FP16): ~7.3 MB
+Target Hardware:   NVIDIA Jetson Nano (4GB)
+Target FPS:        15-30 FPS (TensorRT FP16)
+Training Loss:     0.6 x MultiClass + 0.4 x Binary
+Optimizer:         AdamW (differential LR)
+Imbalance Fix:     Class weights + WeightedRandomSampler
+================================================================

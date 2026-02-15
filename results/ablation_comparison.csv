@@ -1,0 +1,11 @@
+Metric,CNN-ViT Hybrid,Pure CNN (No ViT)
+Multi-class Accuracy,0.8173,0.8847
+Multi-class F1 (Macro),0.7905,0.8538
+Binary Accuracy,0.8820,0.9231
+Binary F1,0.8844,0.9193
+Binary Precision,0.8346,0.9267
+Binary Recall,0.9405,0.9120
+Total Parameters,"3,247,595","1,914,027"
+Model Size (FP32),12.4 MB,7.3 MB
+Inference (ms/batch=2),6.5,5.1
+FPS (per image),306,389
