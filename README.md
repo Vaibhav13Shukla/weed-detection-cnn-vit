@@ -179,7 +179,7 @@ python inference/jetson_weed_detector.py --model exports/weed_detector_cnn_vit.o
 
 ## 🌾 Dataset
 
-- **Source**: [Kaggle - Crop and Weed Detection](https://www.kaggle.com/datasets/ravirajsinh45/crop-and-weed-detection-data-with-bounding-boxes) (or your specific dataset)
+- **Source**: [Kaggle - Crop and Weed Detection](https://www.kaggle.com/datasets/imsparsh/deepweeds) (or your specific dataset)
 - **Classes**: 9 species (weeds + crops)
 - **Split**: 70% train / 15% val / 15% test
 - **Augmentation**: RandomFlip, RandomRotation, ColorJitter, RandomErasing
